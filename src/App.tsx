@@ -25,7 +25,12 @@ function App() {
       >
         <Text fontSize="50px">25 + 5 Clock</Text>
         {/* Set Time Components */}
-        <Box display="flex" mt="15px" gap="50px">
+        <Box
+          display="flex"
+          flexDirection={["column", "column", "row"]}
+          mt="15px"
+          gap={["10px", "10px", "50px"]}
+        >
           <Box fontSize="30px">
             <Text>Break Length</Text>
             <Box
