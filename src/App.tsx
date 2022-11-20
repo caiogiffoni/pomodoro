@@ -1,5 +1,10 @@
-import { Box, Icon, Text } from "@chakra-ui/react";
-import { AiOutlineArrowDown, AiOutlineArrowUp } from "react-icons/ai";
+import { Box, HStack, Icon, Link, Text } from "@chakra-ui/react";
+import {
+  AiOutlineArrowDown,
+  AiOutlineArrowUp,
+  AiFillLinkedin,
+  AiFillGithub,
+} from "react-icons/ai";
 import { BsFillPlayFill, BsFillPauseFill } from "react-icons/bs";
 import { BiRefresh } from "react-icons/bi";
 
@@ -79,8 +84,21 @@ function App() {
           <Icon w="40px" h="40px" as={BsFillPauseFill} />
           <Icon w="40px" h="40px" as={BiRefresh} />
         </Box>
+        {/* Contact */}
         <Text>Coded by</Text>
         <Text color="teal.200">Caio Giffoni</Text>
+        <HStack spacing={5} mt="10px">
+          <Box>
+            <Link href="https://www.linkedin.com/in/caiocgfg" target="_blank">
+              <Icon boxSize="30px" as={AiFillLinkedin} />
+            </Link>
+          </Box>
+          <Box>
+            <Link href="https://github.com/caiogiffoni" target="_blank">
+              <Icon boxSize="30px" as={AiFillGithub} />
+            </Link>
+          </Box>
+        </HStack>
       </Box>
     </Box>
   );
