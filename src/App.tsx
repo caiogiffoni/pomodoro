@@ -37,29 +37,29 @@ function App() {
           gap={["10px", "10px", "50px"]}
         >
           <Box fontSize="30px">
-            <Text>Break Length</Text>
+            <Text id="break-label">Break Length</Text>
             <Box
               display="flex"
               gap="20px"
               justifyContent="center"
               alignItems="center"
             >
-              <Icon as={AiOutlineArrowDown} />
-              <Text>5</Text>
-              <Icon as={AiOutlineArrowUp} />
+              <Icon id="break-decrement" as={AiOutlineArrowDown} />
+              <Text id="break-length">5</Text>
+              <Icon id="break-increment" as={AiOutlineArrowUp} />
             </Box>
           </Box>
           <Box fontSize="30px">
-            <Text>Session Length</Text>
+            <Text id="session-label">Session Length</Text>
             <Box
               display="flex"
               gap="20px"
               justifyContent="center"
               alignItems="center"
             >
-              <Icon as={AiOutlineArrowDown} />
-              <Text>25</Text>
-              <Icon as={AiOutlineArrowUp} />
+              <Icon id="session-decrement" as={AiOutlineArrowDown} />
+              <Text id="session-length">25</Text>
+              <Icon id="session-increment" as={AiOutlineArrowUp} />
             </Box>
           </Box>
         </Box>
@@ -75,14 +75,20 @@ function App() {
           justifyContent="center"
           alignItems="center"
         >
-          <Text fontSize="30px">Session</Text>
-          <Text fontSize="80px">25:00</Text>
+          <Text id="timer-label" fontSize="30px">
+            Session
+          </Text>
+          <Text id="time-left" fontSize="80px">
+            25:00
+          </Text>
         </Box>
         {/* Controls */}
         <Box mt="20px" display="flex" gap="12px">
-          <Icon w="40px" h="40px" as={BsFillPlayFill} />
-          <Icon w="40px" h="40px" as={BsFillPauseFill} />
-          <Icon w="40px" h="40px" as={BiRefresh} />
+          <Box id="start_stop">
+            <Icon w="40px" h="40px" as={BsFillPlayFill} mr="-20px" />
+            <Icon w="40px" h="40px" as={BsFillPauseFill} />
+          </Box>
+          <Icon id="reset" w="40px" h="40px" as={BiRefresh} />
         </Box>
         {/* Contact */}
         <Text>Coded by</Text>
