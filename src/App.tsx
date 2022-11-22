@@ -7,8 +7,107 @@ import {
 } from "react-icons/ai";
 import { BsFillPlayFill, BsFillPauseFill } from "react-icons/bs";
 import { BiRefresh } from "react-icons/bi";
+import { useEffect, useState } from "react";
+import Countdown, { calcTimeDelta, CountdownApi } from "react-countdown";
+
+interface ITime {
+  hours: number;
+  minutes: number;
+  seconds: number;
+  completed: boolean;
+}
 
 function App() {
+  const [breakLength, setBreakLength] = useState(5);
+  const [sessionLength, setSessionLength] = useState(25);
+  const [timeLeft, setTimeLeft] = useState(Date.now() + 25 * 1000 * 60);
+  // const [play, setPlay] = useState(true);
+  const [session, setSession] = useState(true);
+
+  let countdownApi: CountdownApi | null = null;
+
+  const audio: HTMLVideoElement = document.querySelector(`#beep`)!;
+
+  const renderer = ({ hours, minutes, seconds, completed }: ITime) => {
+    // if (seconds == 0 && completed) {
+    //   //   console.log("comple");
+    //   //   // await new Promise((r) => setTimeout(r, 1000));
+    //   startCount();
+    // }
+    // Render a countdown
+    if (hours === 1) minutes = 60;
+    return (
+      <Text id="time-left" fontSize="80px">
+        {minutes.toLocaleString("en-US", { minimumIntegerDigits: 2 })}:
+        {seconds.toLocaleString("en-US", { minimumIntegerDigits: 2 })}
+      </Text>
+    );
+  };
+
+  const startCount = async () => {
+    audio.play();
+    await new Promise((r) => setTimeout(r, 1000));
+    countdownApi?.stop();
+    // console.log("chegio");
+    // console.log(timeLeft);
+    // console.log(breakLength);
+    // console.log("cabou");
+    if (session) {
+      setTimeLeft(Date.now() + breakLength * 1000 * 60);
+      // countdownApi?.start();
+    } else {
+      setTimeLeft(Date.now() + sessionLength * 1000 * 60);
+    }
+    countdownApi?.start();
+    // setTimeLeft(Date.now() + breakLength * 1000);
+    // console.log(countdownApi?.start);
+    // console.log(countdownApi?.isStarted());
+    // if (countdownApi?.isStarted()) {
+    //   countdownApi?.pause();
+    // } else {
+    //   countdownApi?.start();
+    // }
+    setSession(!session);
+  };
+
+  useEffect(() => {
+    setTimeLeft(Date.now() + sessionLength * 1000 * 60);
+  }, [sessionLength]);
+
+  const resetInfo = () => {
+    setBreakLength(5);
+    setSessionLength(25);
+    countdownApi?.stop();
+    setSession(true);
+    audio.pause();
+    audio.load();
+  };
+
+  const setRef = (countdown: Countdown | null): void => {
+    if (countdown) {
+      countdownApi = countdown.getApi();
+    }
+  };
+
+  const sessionIncDec = (n: number) => {
+    if (
+      sessionLength + n === 0 ||
+      sessionLength + n > 60 ||
+      countdownApi?.isStarted()
+    )
+      return;
+    setSessionLength(sessionLength + n);
+  };
+  const breakIncDec = (n: number) => {
+    if (
+      breakLength + n === 0 ||
+      breakLength + n > 60 ||
+      countdownApi?.isStarted()
+    )
+      return;
+    setBreakLength(breakLength + n);
+  };
+
   return (
     <Box
       w="100vw"
@@ -39,14 +138,32 @@ function App() {
           <Box fontSize="30px">
             <Text id="break-label">Break Length</Text>
             <Box
-              display="flex"
               gap="20px"
+              display="flex"
               justifyContent="center"
               alignItems="center"
             >
-              <Icon id="break-decrement" as={AiOutlineArrowDown} />
-              <Text id="break-length">5</Text>
-              <Icon id="break-increment" as={AiOutlineArrowUp} />
+              <Box
+                as="button"
+                id="break-decrement"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                onClick={() => breakIncDec(-1)}
+              >
+                <Icon as={AiOutlineArrowDown} />
+              </Box>
+              <Text id="break-length">{breakLength}</Text>
+              <Box
+                as="button"
+                id="break-increment"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                onClick={() => breakIncDec(1)}
+              >
+                <Icon as={AiOutlineArrowUp} />
+              </Box>
             </Box>
           </Box>
           <Box fontSize="30px">
@@ -57,9 +174,27 @@ function App() {
               justifyContent="center"
               alignItems="center"
             >
-              <Icon id="session-decrement" as={AiOutlineArrowDown} />
-              <Text id="session-length">25</Text>
-              <Icon id="session-increment" as={AiOutlineArrowUp} />
+              <Box
+                as="button"
+                id="session-decrement"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                onClick={() => sessionIncDec(-1)}
+              >
+                <Icon as={AiOutlineArrowDown} />
+              </Box>
+              <Text id="session-length">{sessionLength}</Text>
+              <Box
+                as="button"
+                id="session-increment"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                onClick={() => sessionIncDec(1)}
+              >
+                <Icon as={AiOutlineArrowUp} />
+              </Box>
             </Box>
           </Box>
         </Box>
@@ -76,19 +211,44 @@ function App() {
           alignItems="center"
         >
           <Text id="timer-label" fontSize="30px">
-            Session
+            {session ? "Session" : "Break"}
           </Text>
-          <Text id="time-left" fontSize="80px">
-            25:00
-          </Text>
+          <Countdown
+            date={timeLeft}
+            ref={setRef}
+            autoStart={false}
+            renderer={renderer}
+            onComplete={(time, b) => {
+              if (time.seconds === 0 && time.completed) startCount();
+              // countdownApi?.stop();
+              // countdownApi?.start();
+              // startCount();
+            }}
+          />
+          <audio
+            id="beep"
+            src="https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav"
+          />
         </Box>
         {/* Controls */}
         <Box mt="20px" display="flex" gap="12px">
-          <Box id="start_stop">
+          <Box
+            as="button"
+            id="start_stop"
+            onClick={() => {
+              if (countdownApi?.isStarted()) {
+                countdownApi?.pause();
+              } else {
+                countdownApi?.start();
+              }
+            }}
+          >
             <Icon w="40px" h="40px" as={BsFillPlayFill} mr="-20px" />
             <Icon w="40px" h="40px" as={BsFillPauseFill} />
           </Box>
-          <Icon id="reset" w="40px" h="40px" as={BiRefresh} />
+          <Box as="button" id="reset" onClick={() => resetInfo()}>
+            <Icon w="40px" h="40px" as={BiRefresh} />
+          </Box>
         </Box>
         {/* Contact */}
         <Text>Coded by</Text>
