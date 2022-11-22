@@ -21,7 +21,6 @@ function App() {
   const [breakLength, setBreakLength] = useState(5);
   const [sessionLength, setSessionLength] = useState(25);
   const [timeLeft, setTimeLeft] = useState(Date.now() + 25 * 1000 * 60);
-  // const [play, setPlay] = useState(true);
   const [session, setSession] = useState(true);
 
   let countdownApi: CountdownApi | null = null;
@@ -29,11 +28,6 @@ function App() {
   const audio: HTMLVideoElement = document.querySelector(`#beep`)!;
 
   const renderer = ({ hours, minutes, seconds, completed }: ITime) => {
-    // if (seconds == 0 && completed) {
-    //   //   console.log("comple");
-    //   //   // await new Promise((r) => setTimeout(r, 1000));
-    //   startCount();
-    // }
     // Render a countdown
     if (hours === 1) minutes = 60;
     return (
@@ -48,25 +42,12 @@ function App() {
     audio.play();
     await new Promise((r) => setTimeout(r, 1000));
     countdownApi?.stop();
-    // console.log("chegio");
-    // console.log(timeLeft);
-    // console.log(breakLength);
-    // console.log("cabou");
     if (session) {
       setTimeLeft(Date.now() + breakLength * 1000 * 60);
-      // countdownApi?.start();
     } else {
       setTimeLeft(Date.now() + sessionLength * 1000 * 60);
     }
     countdownApi?.start();
-    // setTimeLeft(Date.now() + breakLength * 1000);
-    // console.log(countdownApi?.start);
-    // console.log(countdownApi?.isStarted());
-    // if (countdownApi?.isStarted()) {
-    //   countdownApi?.pause();
-    // } else {
-    //   countdownApi?.start();
-    // }
     setSession(!session);
   };
 
@@ -220,9 +201,6 @@ function App() {
             renderer={renderer}
             onComplete={(time, b) => {
               if (time.seconds === 0 && time.completed) startCount();
-              // countdownApi?.stop();
-              // countdownApi?.start();
-              // startCount();
             }}
           />
           <audio
